@@ -1,0 +1,130 @@
+{
+   "_id": "_design/test-couchapp",
+   "_rev": "1-aef5c90784c00a14b776a165b107a536",
+   "vendor": {
+       "couchapp": {
+           "metadata": {
+               "name": "couchapp",
+               "fetch_uri": "git://github.com/couchapp/couchapp.git",
+               "description": "official couchapp vendor"
+           }
+       }
+   },
+   "language": "javascript",
+   "views": {
+       "recent-items": {
+           "map": "function(doc) {\n  if (doc.created_at) {\n      var p = doc.profile || {};\n      emit(doc.created_at, {\n          message:doc.message,\n          gravatar_url : p.gravatar_url,\n          nickname : p.nickname,\n          name : doc.name\n      });\n  }\n};"
+       }
+   },
+   "lists": {
+   },
+   "updates": {
+   },
+   "README": "## Generated CouchApp\n\nThis is meant to be an example CouchApp and to ship with most of the CouchApp goodies.\n\nClone with git:\n\n    git clone git://github.com/couchapp/example.git\n    cd example\n\nInstall with \n    \n    couchapp push . http://localhost:5984/example\n\nor (if you have security turned on)\n\n    couchapp push . http://adminname:adminpass@localhost:5984/example\n  \nYou can also create this app by running\n\n    couchapp generate example && cd example\n    couchapp push . http://localhost:5984/example\n\nDeprecated: *couchapp generate proto && cd proto*\n\n\n## Todo\n\n* factor CouchApp Commonjs to jquery.couch.require.js\n* use $.couch.app in app.js\n\n## License\n\nApache 2.0",
+   "shows": {
+   },
+   "couchapp": {
+       "manifest": [
+           "couchapp.json",
+           "language",
+           "lists/",
+           "README.md",
+           "shows/",
+           "updates/",
+           "vendor/",
+           "vendor/couchapp/",
+           "vendor/couchapp/metadata.json",
+           "views/",
+           "views/recent-items/",
+           "views/recent-items/map.js"
+       ],
+       "signatures": {
+           "index.html": "cd1face44add6a03818cf3cc5eb2700e",
+           "vendor/couchapp/md5.js": "765de38d07dbee73ee1859037cdb79f7",
+           "script/app.js": "49b8595c2821f8ce154d883863fd8e86",
+           "vendor/couchapp/jquery.mustache.js": "0bfbc929b6d5500aacfa860c783550d8",
+           "vendor/couchapp/jquery.couchProfile.js": "448acd8b2187d25a3fe2e10c6019f5ce",
+           "vendor/couchapp/jquery.couchLogin.js": "2523482008955747ddba7a20fed98b54",
+           "vendor/couchapp/jquery.couch.app.js": "d395b6e8c9781a78230050b90dd87936",
+           "vendor/couchapp/jquery.couchForm.js": "7add5db2e78544a4eac7e8d2251de651",
+           "style/main.css": "d76a19365833c6c8615b45804f59f84a",
+           "vendor/couchapp/jquery.couch.app.util.js": "9fc84685dfa7b35237239916ae406583"
+       },
+       "name": "Basic CouchApp",
+       "objects": {
+       },
+       "description": "CouchApp with changes feed and form support."
+   },
+   "_attachments": {
+       "index.html": {
+           "content_type": "text/html",
+           "revpos": 1,
+           "digest": "md5-lScL+LCwuZFHXvbLkTUoHA==",
+           "length": 2307,
+           "stub": true
+       },
+       "vendor/couchapp/md5.js": {
+           "content_type": "application/javascript",
+           "revpos": 1,
+           "digest": "md5-p777iQdVR/HkNU2OXNRcDA==",
+           "length": 8656,
+           "stub": true
+       },
+       "script/app.js": {
+           "content_type": "application/javascript",
+           "revpos": 1,
+           "digest": "md5-afiRQ/T6SbsqPPszfj1VjA==",
+           "length": 2273,
+           "stub": true
+       },
+       "vendor/couchapp/jquery.mustache.js": {
+           "content_type": "application/javascript",
+           "revpos": 1,
+           "digest": "md5-0mQwvKdqMmuLLG7h4+ihZg==",
+           "length": 9466,
+           "stub": true
+       },
+       "vendor/couchapp/jquery.couchProfile.js": {
+           "content_type": "application/javascript",
+           "revpos": 1,
+           "digest": "md5-6o+5pliCCv+EsX99aJw0lQ==",
+           "length": 3743,
+           "stub": true
+       },
+       "vendor/couchapp/jquery.couchLogin.js": {
+           "content_type": "application/javascript",
+           "revpos": 1,
+           "digest": "md5-y5T3ne1xLJK676SJXQSpMQ==",
+           "length": 3829,
+           "stub": true
+       },
+       "vendor/couchapp/jquery.couch.app.js": {
+           "content_type": "application/javascript",
+           "revpos": 1,
+           "digest": "md5-llhfuT2OaJ9CGRIaEv9Nrw==",
+           "length": 7258,
+           "stub": true
+       },
+       "vendor/couchapp/jquery.couchForm.js": {
+           "content_type": "application/javascript",
+           "revpos": 1,
+           "digest": "md5-S51/VAwiZOe8JJ7CRvv9NA==",
+           "length": 1261,
+           "stub": true
+       },
+       "style/main.css": {
+           "content_type": "text/css",
+           "revpos": 1,
+           "digest": "md5-m/EaabeYfT2nXfoiaawMGg==",
+           "length": 866,
+           "stub": true
+       },
+       "vendor/couchapp/jquery.couch.app.util.js": {
+           "content_type": "application/javascript",
+           "revpos": 1,
+           "digest": "md5-nF5BFf8SiYf4aUU/TGOhnQ==",
+           "length": 3051,
+           "stub": true
+       }
+   }
+}
