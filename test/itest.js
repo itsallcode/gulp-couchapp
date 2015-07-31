@@ -8,6 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
+var deep = require('deep-diff');
 
 var couchapp = require('../index');
 
@@ -29,6 +30,8 @@ function getExpected(filePath) {
 function compareJsonContent(expectedFile, actualFile) {
   var expectedString = String(expectedFile.contents)
   var actualString = String(actualFile.contents)
+  //var differences = deep.diff(JSON.parse(actualString), JSON.parse(expectedString));
+  //console.log("Differences: ", JSON.stringify(differences, null, "  "));
   assert.deepEqual(JSON.parse(actualString), JSON.parse(expectedString));
 }
 
