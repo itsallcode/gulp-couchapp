@@ -1,4 +1,5 @@
-/*jslint node: true */
+/* jslint node: true */
+/* jslint esnext: true */
 'use strict';
 var through = require('through2');
 var gutil = require('gulp-util');
@@ -30,7 +31,7 @@ module.exports = function() {
       objects: {},
       description: undefined
     }
-  }
+  };
 
   function addFile(filePath, content) {
     filePath = filePath.replace(/\\/g, '/');
@@ -123,7 +124,7 @@ module.exports = function() {
       path: path.join(__dirname, './test.txt'),
       contents: new Buffer(JSON.stringify(buildCouchAppDocument(), null, "  "))
     });
-    /*jshint validthis:true */
+    /* jshint validthis:true */
     this.push(file);
     callback();
   }
