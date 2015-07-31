@@ -1,13 +1,11 @@
+/*jslint node: true */
 'use strict';
 var through = require('through2');
 var gutil = require('gulp-util');
 var path = require('path');
 var PluginError = gutil.PluginError;
-//throw new PluginError(PLUGIN_NAME, 'My plugin error!');
 
 var PLUGIN_NAME = 'gulp-couchapp';
-//gutil.log("Defining plugin ", through);
-
 
 module.exports = function() {
   var app = {};
@@ -29,20 +27,20 @@ module.exports = function() {
 
     app[file.relative] = contents;
     cb();
-  };
+  }
 
   function flush(callback) {
     gutil.log("Flushing...", arguments);
-    //throw new PluginError(PLUGIN_NAME, 'My plugin error!');
     var file = new gutil.File({
       base: path.join(__dirname, './'),
       cwd: __dirname,
       path: path.join(__dirname, './test.txt'),
       contents: new Buffer(JSON.stringify(app, null, "  "))
     });
+    /*jshint validthis:true */
     this.push(file);
     callback();
-  };
+  }
 
   return through.obj(transform, flush);
-}
+};
