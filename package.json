@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Gulp plugin for uploading a couchapp to couchdb",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "test": "gulp test"
   },
@@ -29,7 +32,6 @@
   },
   "devDependencies": {
     "should": "^7.0.2",
-    "deep-diff": "^0.3.2",
     "gulp": "^3.9.0",
     "gulp-jshint": "^1.11.2",
     "gulp-mocha": "^2.1.3"

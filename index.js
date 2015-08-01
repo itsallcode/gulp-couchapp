@@ -153,7 +153,6 @@ module.exports = function() {
 
   function buildAttachments() {
     for (var attachment of app.attachments) {
-      gutil.log("Adding attachment ", attachment.name);
       appDoc._attachments[attachment.name] = {
         data: attachment.base64content,
         content_type: attachment.contentType

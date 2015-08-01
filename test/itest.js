@@ -1,5 +1,4 @@
 /* jshint node: true */
-///* global describe, it */
 'use strict';
 var gulp = require('gulp');
 var should = require('should');
@@ -8,13 +7,11 @@ var fs = require('fs');
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
-var deep = require('deep-diff');
 
 var couchapp = require('../index');
 
 
 function getFile(filePath) {
-    console.log(__dirname);
     return new gutil.File({
         path:     filePath,
         cwd:      __dirname,
@@ -28,11 +25,9 @@ function getExpected(filePath) {
 }
 
 function compareJsonContent(expectedFile, actualFile) {
-  var expectedString = String(expectedFile.contents)
-  var actualString = String(actualFile.contents)
-  //var differences = deep.diff(JSON.parse(actualString), JSON.parse(expectedString));
-  //console.log("Differences: ", JSON.stringify(differences, null, "  "));
-  assert.deepEqual(JSON.parse(actualString), JSON.parse(expectedString));
+  var expected = JSON.parse(String(expectedFile.contents))
+  var actual = JSON.parse(String(actualFile.contents))
+  assert.deepEqual(actual, expected);
 }
 
 describe('couchapp()', function() {
