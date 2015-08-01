@@ -6,18 +6,19 @@ var gutil = require('gulp-util');
 var path = require('path');
 var base64 = require('hi-base64');
 var md5 = require('md5');
+var md5 = require('./couchapp-builder.js');
 var PluginError = gutil.PluginError;
 
 var PLUGIN_NAME = 'gulp-couchapp';
 
-module.exports = function() {
+module.exports = function () {
 
   var app = {
     vendor: {},
     language: undefined,
     views: {},
     lists: {},
-    _attachments : {},
+    _attachments: {},
     updates: {},
     README: undefined,
     _id: undefined,
@@ -34,40 +35,41 @@ module.exports = function() {
   function addFile(filePath, content) {
     filePath = path.normalize(filePath).replace(/\\/g, '/');
     gutil.log("Processing file", filePath);
-    if(filePath.indexOf('_attachments/') > -1) {
+    if (filePath.indexOf('_attachments/') > -1) {
       addAttachment(filePath, content);
       return;
     }
-    if(filePath.indexOf('views/') > -1) {
+    if (filePath.indexOf('views/') > -1) {
       addView(filePath, content);
       return;
     }
-    if(/vendor\/.*\/metadata\.json/.test(filePath)) {
+    if (/vendor\/.*\/metadata\.json/.test(filePath)) {
       addVendorMetadata(filePath, content);
       return;
     }
     switch (filePath) {
-      case "language":
-        app.language = content.trim();
-        return;
-      case "_id":
-        app._id = content.trim();
-        return;
-      case "README.md":
-        app.README = content.trim();
-        return;
-      case "couchapp.json":
-        var couchapp_json = JSON.parse(content);
-        app.couchapp.name = couchapp_json.name;
-        app.couchapp.description = couchapp_json.description;
-        return;
-      default:
-        gutil.log("WARN: unhandled path", filePath);
+    case "language":
+      app.language = content.trim();
+      return;
+    case "_id":
+      app._id = content.trim();
+      return;
+    case "README.md":
+      app.README = content.trim();
+      return;
+    case "couchapp.json":
+      var couchapp_json = JSON.parse(content);
+      app.couchapp.name = couchapp_json.name;
+      app.couchapp.description = couchapp_json.description;
+      return;
+    default:
+      gutil.log("WARN: unhandled path", filePath);
     }
   }
 
   function addVendorMetadata(filePath, content) {
-    var vendorName = filePath.replace(/vendor\//, '').replace(/\/metadata\.json/, '');
+    var vendorName = filePath.replace(/vendor\//, '').replace(
+      /\/metadata\.json/, '');
     app.vendor[vendorName] = {
       metadata: JSON.parse(content)
     };
@@ -96,15 +98,16 @@ module.exports = function() {
 
   function getContentType(filePath) {
     var ext = path.extname(filePath);
-    switch(ext) {
-      case ".html":
-        return "text/html";
-      case ".js":
-        return "application/javascript";
-      case ".css":
-        return "text/css";
-      default:
-        throw new PluginError(PLUGIN_NAME, "Unknown extension '" + ext + "' for path '" + filePath + "'");
+    switch (ext) {
+    case ".html":
+      return "text/html";
+    case ".js":
+      return "application/javascript";
+    case ".css":
+      return "text/css";
+    default:
+      throw new PluginError(PLUGIN_NAME, "Unknown extension '" + ext +
+        "' for path '" + filePath + "'");
     }
   }
 
@@ -116,11 +119,12 @@ module.exports = function() {
 
   function buildManifests() {
     app.couchapp.manifest = ["couchapp.json",
-          "language",
-          "lists/",
-          "README.md",
-          "shows/",
-          "updates/"];
+      "language",
+      "lists/",
+      "README.md",
+      "shows/",
+      "updates/"
+    ];
     app.couchapp.manifest = app.couchapp.manifest.concat(getVendorManifest());
     app.couchapp.manifest = app.couchapp.manifest.concat(getViewsManifest());
   }
@@ -146,16 +150,16 @@ module.exports = function() {
   }
 
   function transform(file, enc, cb) {
-    if(file.isNull()) {
+    if (file.isNull()) {
       cb();
       return;
     }
 
-    if(file.isStream()) {
+    if (file.isStream()) {
       throw new PluginError(PLUGIN_NAME, "Streams not supported");
     }
 
-    if(enc !== "utf8") {
+    if (enc !== "utf8") {
       var message = "Unsupported encoding " + enc + " for file " + file.relative;
       gutil.log("ERROR:", message);
       throw new PluginError(PLUGIN_NAME, message);
@@ -171,7 +175,8 @@ module.exports = function() {
       base: path.join(__dirname, './'),
       cwd: __dirname,
       path: path.join(__dirname, './test.txt'),
-      contents: new Buffer(JSON.stringify(buildCouchappument(), null, "  "))
+      contents: new Buffer(JSON.stringify(buildCouchappument(), null,
+        "  "))
     });
     /* jshint validthis:true */
     this.push(file);

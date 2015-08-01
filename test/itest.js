@@ -12,16 +12,16 @@ var couchapp = require('../index');
 
 
 function getFile(filePath) {
-    return new gutil.File({
-        path:     filePath,
-        cwd:      __dirname,
-        base:     path.dirname(filePath),
-        contents: fs.readFileSync(filePath)
-    });
+  return new gutil.File({
+    path: filePath,
+    cwd: __dirname,
+    base: path.dirname(filePath),
+    contents: fs.readFileSync(filePath)
+  });
 }
 
 function getExpected(filePath) {
-    return getFile(path.join('test', 'expected', filePath));
+  return getFile(path.join('test', 'expected', filePath));
 }
 
 function compareJsonContent(expectedFile, actualFile) {
@@ -30,17 +30,18 @@ function compareJsonContent(expectedFile, actualFile) {
   assert.deepEqual(actual, expected);
 }
 
-describe('couchapp()', function() {
-    it('should build couchapp document from app', function(done) {
-      gulp.task('testCouchAppTask', function(cb) {
-        gulp.src(['./test/fixtures/test-couchapp/**'])
-          .pipe(couchapp())
-          .pipe(through.obj(function(file, enc, cb) {
-            compareJsonContent(getExpected('test-couchapp-raw.json'), file);
-            done();
-            cb();
-          }));
-      });
-      gulp.tasks.testCouchAppTask.fn();
+describe('couchapp()', function () {
+  it('should build couchapp document from app', function (done) {
+    gulp.task('testCouchAppTask', function (cb) {
+      gulp.src(['./test/fixtures/test-couchapp/**'])
+        .pipe(couchapp())
+        .pipe(through.obj(function (file, enc, cb) {
+          compareJsonContent(getExpected(
+            'test-couchapp-raw.json'), file);
+          done();
+          cb();
+        }));
     });
+    gulp.tasks.testCouchAppTask.fn();
+  });
 });
