@@ -11,10 +11,8 @@ var PluginError = gutil.PluginError;
 var PLUGIN_NAME = 'gulp-couchapp';
 
 module.exports = function() {
+
   var app = {
-    attachments: []
-  };
-  var appDoc = {
     vendor: {},
     language: undefined,
     views: {},
@@ -50,18 +48,18 @@ module.exports = function() {
     }
     switch (filePath) {
       case "language":
-        appDoc.language = content.trim();
+        app.language = content.trim();
         return;
       case "_id":
-        appDoc._id = content.trim();
+        app._id = content.trim();
         return;
       case "README.md":
-        appDoc.README = content.trim();
+        app.README = content.trim();
         return;
       case "couchapp.json":
         var couchapp_json = JSON.parse(content);
-        appDoc.couchapp.name = couchapp_json.name;
-        appDoc.couchapp.description = couchapp_json.description;
+        app.couchapp.name = couchapp_json.name;
+        app.couchapp.description = couchapp_json.description;
         return;
       default:
         gutil.log("WARN: unhandled path", filePath);
@@ -70,7 +68,7 @@ module.exports = function() {
 
   function addVendorMetadata(filePath, content) {
     var vendorName = filePath.replace(/vendor\//, '').replace(/\/metadata\.json/, '');
-    appDoc.vendor[vendorName] = {
+    app.vendor[vendorName] = {
       metadata: JSON.parse(content)
     };
   }
@@ -79,7 +77,7 @@ module.exports = function() {
     filePath = filePath.replace(/views\//, '');
     var dirs = path.dirname(filePath).split(path.sep);
     var name = path.basename(filePath, path.extname(filePath));
-    var insertionPoint = appDoc.views;
+    var insertionPoint = app.views;
     for (var dirname of dirs) {
       insertionPoint[dirname] = {};
       insertionPoint = insertionPoint[dirname];
@@ -89,13 +87,11 @@ module.exports = function() {
 
   function addAttachment(filePath, content) {
     var name = filePath.replace(/_attachments\//, '');
-    app.attachments.push({
-      name: name,
-      content: content,
-      base64content: base64.encode(content),
-      md5: md5(content),
-      contentType: getContentType(filePath)
-    });
+    app._attachments[name] = {
+      data: base64.encode(content),
+      content_type: getContentType(filePath)
+    };
+    app.couchapp.signatures[name] = md5(content);
   }
 
   function getContentType(filePath) {
@@ -112,27 +108,26 @@ module.exports = function() {
     }
   }
 
-  function buildCouchAppDocument() {
+  function buildCouchappument() {
     gutil.log("Building CouchApp document...");
-    buildAttachments();
     buildManifests();
-    return appDoc;
+    return app;
   }
 
   function buildManifests() {
-    appDoc.couchapp.manifest = ["couchapp.json",
+    app.couchapp.manifest = ["couchapp.json",
           "language",
           "lists/",
           "README.md",
           "shows/",
           "updates/"];
-    appDoc.couchapp.manifest = appDoc.couchapp.manifest.concat(getVendorManifest());
-    appDoc.couchapp.manifest = appDoc.couchapp.manifest.concat(getViewsManifest());
+    app.couchapp.manifest = app.couchapp.manifest.concat(getVendorManifest());
+    app.couchapp.manifest = app.couchapp.manifest.concat(getViewsManifest());
   }
 
   function getVendorManifest() {
     var list = ["vendor/"];
-    for (var vendorName of Object.keys(appDoc.vendor)) {
+    for (var vendorName of Object.keys(app.vendor)) {
       list.push("vendor/" + vendorName + "/");
       list.push("vendor/" + vendorName + "/metadata.json");
     }
@@ -140,25 +135,14 @@ module.exports = function() {
   }
 
   function getViewsManifest() {
-      var list = ["views/"];
-      for (var dirName of Object.keys(appDoc.views)) {
-        list.push("views/" + dirName + "/");
-        for (var file of Object.keys(appDoc.views[dirName])) {
-          list.push("views/" + dirName + "/" + file + ".js");
-        }
+    var list = ["views/"];
+    for (var dirName of Object.keys(app.views)) {
+      list.push("views/" + dirName + "/");
+      for (var file of Object.keys(app.views[dirName])) {
+        list.push("views/" + dirName + "/" + file + ".js");
       }
-      return list;
     }
-
-
-  function buildAttachments() {
-    for (var attachment of app.attachments) {
-      appDoc._attachments[attachment.name] = {
-        data: attachment.base64content,
-        content_type: attachment.contentType
-      };
-      appDoc.couchapp.signatures[attachment.name] = attachment.md5;
-    }
+    return list;
   }
 
   function transform(file, enc, cb) {
@@ -187,7 +171,7 @@ module.exports = function() {
       base: path.join(__dirname, './'),
       cwd: __dirname,
       path: path.join(__dirname, './test.txt'),
-      contents: new Buffer(JSON.stringify(buildCouchAppDocument(), null, "  "))
+      contents: new Buffer(JSON.stringify(buildCouchappument(), null, "  "))
     });
     /* jshint validthis:true */
     this.push(file);
