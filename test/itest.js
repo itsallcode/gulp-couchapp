@@ -30,18 +30,37 @@ function compareJsonContent(expectedFile, actualFile) {
   assert.deepEqual(actual, expected);
 }
 
-describe('couchapp()', function () {
+describe('couchapp.buildDoc()', function () {
   it('should build couchapp document from app', function (done) {
     gulp.task('testCouchAppTask', function (cb) {
       gulp.src(['./test/fixtures/test-couchapp/**'])
-        .pipe(couchapp())
+        .pipe(couchapp.buildDoc())
         .pipe(through.obj(function (file, enc, cb) {
           compareJsonContent(getExpected(
             'test-couchapp-raw.json'), file);
+          assert.equal(file.contents.length, 60021);
+          assert.equal(file.path, "couchappdoc.json");
           done();
           cb();
         }));
     });
     gulp.tasks.testCouchAppTask.fn();
   });
+  it('should build couchapp document from app (prettify)', function (done) {
+    gulp.task('testCouchAppTask', function (cb) {
+      gulp.src(['./test/fixtures/test-couchapp/**'])
+        .pipe(couchapp.buildDoc({
+          prettify: true
+        }))
+        .pipe(through.obj(function (file, enc, cb) {
+          compareJsonContent(getExpected(
+            'test-couchapp-raw.json'), file);
+          assert.equal(file.contents.length, 60623);
+          done();
+          cb();
+        }));
+    });
+    gulp.tasks.testCouchAppTask.fn();
+  });
+
 });

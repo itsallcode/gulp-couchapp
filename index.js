@@ -9,7 +9,8 @@ var PluginError = gutil.PluginError;
 
 var PLUGIN_NAME = 'gulp-couchapp';
 
-module.exports = function () {
+module.exports.buildDoc = function (opts) {
+  opts = opts || {};
   var builder = couchappBuilder();
 
   function transform(file, enc, cb) {
@@ -34,12 +35,11 @@ module.exports = function () {
   }
 
   function flush(callback) {
+    var indentation = opts.prettify ? "  " : "";
+    var jsonContent = JSON.stringify(builder.build(), null, indentation);
     var file = new gutil.File({
-      base: path.join(__dirname, './'),
-      cwd: __dirname,
-      path: path.join(__dirname, './test.txt'),
-      contents: new Buffer(JSON.stringify(builder.build(), null,
-        "  "))
+      path: 'couchappdoc.json',
+      contents: new Buffer(jsonContent)
     });
     /* jshint validthis:true */
     this.push(file);
