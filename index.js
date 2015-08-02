@@ -4,8 +4,8 @@
 var through = require('through2');
 var gutil = require('gulp-util');
 var path = require('path');
-var nanoConnect = require('nano');
 var couchappBuilder = require('./couchapp-builder.js');
+var couchdbConnect = require('./couchdb.js');
 var PluginError = gutil.PluginError;
 
 var PLUGIN_NAME = 'gulp-couchapp';
@@ -44,10 +44,11 @@ module.exports.buildDoc = function () {
 };
 
 module.exports.push = function (opts) {
-  opts = opts || {};
-  var nano = nanoConnect();
-  return through.obj(function (file, enc, cb) {
-    gutil.log("Uploading document to couchdb");
-    cb();
+  return through.obj(function (doc, enc, cb) {
+
+    var couchdb = couchdbConnect(opts);
+    couchdb.uploadApp(doc._id, doc, function () {
+      cb();
+    });
   });
-}
+};

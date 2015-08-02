@@ -24,10 +24,10 @@ function getExpected(filePath) {
   return JSON.parse(getFile(path.join('test', 'expected', filePath)).contents);
 }
 
-function verifyGeneratedDocument(srcGlob, opts, fileCallback) {
+function verifyGeneratedDocument(srcGlob, fileCallback) {
   gulp.task('testCouchAppTask', function (cb) {
     gulp.src([srcGlob])
-      .pipe(couchapp.buildDoc(opts))
+      .pipe(couchapp.buildDoc())
       .pipe(through.obj(function (file, enc, cb) {
         cb();
         fileCallback(file);
@@ -39,7 +39,6 @@ function verifyGeneratedDocument(srcGlob, opts, fileCallback) {
 describe('couchapp.buildDoc()', function () {
   it('should build couchapp document from app', function (done) {
     verifyGeneratedDocument('./test/fixtures/test-couchapp/**',
-      undefined,
       function (doc) {
         assert.deepEqual(doc, getExpected('test-couchapp-raw.json'));
         done();
