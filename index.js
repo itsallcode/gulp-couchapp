@@ -4,13 +4,13 @@
 var through = require('through2');
 var gutil = require('gulp-util');
 var path = require('path');
+var nanoConnect = require('nano');
 var couchappBuilder = require('./couchapp-builder.js');
 var PluginError = gutil.PluginError;
 
 var PLUGIN_NAME = 'gulp-couchapp';
 
-module.exports.buildDoc = function (opts) {
-  opts = opts || {};
+module.exports.buildDoc = function () {
   var builder = couchappBuilder();
 
   function transform(file, enc, cb) {
@@ -35,16 +35,19 @@ module.exports.buildDoc = function (opts) {
   }
 
   function flush(callback) {
-    var indentation = opts.prettify ? "  " : "";
-    var jsonContent = JSON.stringify(builder.build(), null, indentation);
-    var file = new gutil.File({
-      path: 'couchappdoc.json',
-      contents: new Buffer(jsonContent)
-    });
     /* jshint validthis:true */
-    this.push(file);
+    this.push(builder.build());
     callback();
   }
 
   return through.obj(transform, flush);
 };
+
+module.exports.push = function (opts) {
+  opts = opts || {};
+  var nano = nanoConnect();
+  return through.obj(function (file, enc, cb) {
+    gutil.log("Uploading document to couchdb");
+    cb();
+  });
+}
