@@ -5,6 +5,7 @@ var gutil = require('gulp-util');
 var path = require('path');
 var base64 = require('hi-base64');
 var md5 = require('md5');
+var mime = require('mime');
 var PluginError = gutil.PluginError;
 
 var PLUGIN_NAME = 'gulp-couchapp';
@@ -88,24 +89,9 @@ module.exports = function () {
     var name = filePath.replace(/_attachments\//, '');
     app._attachments[name] = {
       data: base64.encode(content),
-      content_type: getContentType(filePath)
+      content_type: mime.lookup(filePath)
     };
     app.couchapp.signatures[name] = md5(content);
-  }
-
-  function getContentType(filePath) {
-    var ext = path.extname(filePath);
-    switch (ext) {
-    case ".html":
-      return "text/html";
-    case ".js":
-      return "application/javascript";
-    case ".css":
-      return "text/css";
-    default:
-      throw new PluginError(PLUGIN_NAME, "Unknown extension '" + ext +
-        "' for path '" + filePath + "'");
-    }
   }
 
   function build() {
