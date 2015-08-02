@@ -30,37 +30,40 @@ function compareJsonContent(expectedFile, actualFile) {
   assert.deepEqual(actual, expected);
 }
 
+function verifyGeneratedDocument(srcGlob, opts, fileCallback) {
+  gulp.task('testCouchAppTask', function (cb) {
+    gulp.src([srcGlob])
+      .pipe(couchapp.buildDoc(opts))
+      .pipe(through.obj(function (file, enc, cb) {
+        cb();
+        fileCallback(file);
+      }));
+  });
+  gulp.tasks.testCouchAppTask.fn();
+}
+
 describe('couchapp.buildDoc()', function () {
   it('should build couchapp document from app', function (done) {
-    gulp.task('testCouchAppTask', function (cb) {
-      gulp.src(['./test/fixtures/test-couchapp/**'])
-        .pipe(couchapp.buildDoc())
-        .pipe(through.obj(function (file, enc, cb) {
-          compareJsonContent(getExpected(
-            'test-couchapp-raw.json'), file);
-          assert.equal(file.contents.length, 60021);
-          assert.equal(file.path, "couchappdoc.json");
-          done();
-          cb();
-        }));
-    });
-    gulp.tasks.testCouchAppTask.fn();
+    verifyGeneratedDocument('./test/fixtures/test-couchapp/**',
+      undefined,
+      function (file) {
+        compareJsonContent(getExpected(
+          'test-couchapp-raw.json'), file);
+        assert.equal(file.contents.length, 60021);
+        assert.equal(file.path, "couchappdoc.json");
+        done();
+      });
   });
   it('should build couchapp document from app (prettify)', function (done) {
-    gulp.task('testCouchAppTask', function (cb) {
-      gulp.src(['./test/fixtures/test-couchapp/**'])
-        .pipe(couchapp.buildDoc({
-          prettify: true
-        }))
-        .pipe(through.obj(function (file, enc, cb) {
-          compareJsonContent(getExpected(
-            'test-couchapp-raw.json'), file);
-          assert.equal(file.contents.length, 60623);
-          done();
-          cb();
-        }));
-    });
-    gulp.tasks.testCouchAppTask.fn();
+    verifyGeneratedDocument('./test/fixtures/test-couchapp/**', {
+        prettify: true
+      },
+      function (file) {
+        compareJsonContent(getExpected(
+          'test-couchapp-raw.json'), file);
+        assert.equal(file.contents.length, 60623);
+        assert.equal(file.path, "couchappdoc.json");
+        done();
+      });
   });
-
 });
