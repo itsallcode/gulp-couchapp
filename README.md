@@ -1,7 +1,7 @@
 # gulp-couchapp
 Gulp plugin for uploading a couchapp to couchdb
 
-[![Build Status](https://travis-ci.org/hamstercommunity/gulp-couchapp.svg?branch=master)](https://travis-ci.org/hamstercommunity/gulp-couchapp)
+# ⚠️ This project is deprecated and not maintained any more ⚠️
 
 ## Usage
 
